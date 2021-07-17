@@ -3,11 +3,13 @@ import { useQuery } from 'react-query';
 
 //component
 import Item from './item/item'
+import Cart from './Cart/Cart'
 import  Drawer  from '@material-ui/core/Drawer';
 import { LinearProgress } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid'
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart'
 import Badge from '@material-ui/core/Badge'
+
 
 //styles
 import {Wrapper, StyledButton} from './App.style'
@@ -39,7 +41,23 @@ const App = () => {
     return items.reduce( (ack: number, item) => ack + item.amount, 0)
   }
 
-  const handleAddToCart = (clickedItem: CartItemType) => null
+  const handleAddToCart = (clickedItem: CartItemType) => {
+    setCartItems(prev => {
+      //1 is the item already added in cart ?
+      const isItemInCart = prev.find(item => item.id === clickedItem.id)
+      
+      if(isItemInCart) {
+        return prev.map( item => (
+          item.id === clickedItem.id
+            ? { ...item, amount: item.amount + 1 }
+            : item 
+        ))
+      }
+      //first tiem the item is added
+      return [...prev, { ...clickedItem, amount: 1}]
+
+    })
+  }
   
   const handleRemoveToCart = () => null
 
@@ -49,7 +67,11 @@ const App = () => {
   return (
     <Wrapper>
     <Drawer anchor='right' open={cartOpen} onClose={ () => setCartOpen(false)}>
-      Cart goes here
+      <Cart 
+        cartItems={cartItems} 
+        addToCart={handleAddToCart} 
+        removeFromCart={handleRemoveToCart}
+      />
     </Drawer>
     <StyledButton onClick={() => setCartOpen(true)}>
       <Badge badgeContent={getTotalItems(cartItems)} color='error'>
