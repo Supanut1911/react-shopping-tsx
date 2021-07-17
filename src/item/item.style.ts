@@ -1,6 +1,6 @@
-import React from 'react';
+
 import styled from 'styled-components'
-import { CartItemType } from '../App';
+
 
 export const Warpper = styled.div`
     display: flex;
